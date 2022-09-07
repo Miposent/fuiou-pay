@@ -1,0 +1,26 @@
+{
+    "name": "miposent/fuiou-pay",
+    "description": "富有支付sdk",
+    "authors": [
+        {
+            "name": "Ain't",
+            "email": "782452789@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.2.5",
+        "pimple/pimple": "~3.0",
+        "guzzlehttp/guzzle": "~6.1",
+        "ext-xmlwriter": "*",
+        "ext-openssl": "*",
+        "ext-json": "*",
+        "ext-simplexml": "*",
+        "ext-iconv": "*",
+        "ext-curl": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Miposent\\FuiOuPay\\": "src/"
+        }
+    }
+}
