@@ -4,10 +4,8 @@ require_once 'vendor/autoload.php';
 
 $app = new \Miposent\FuiOuPay\Application([
     'mode' => 'dev',
-    'ins_cd' => '08A9999999',
-//    'ins_cd' => '08M0027904',
-    'mchnt_cd' => '0002900F0313432',
-//    'mchnt_cd' => '0005840F3983305',
+    'ins_cd' => 'xxxxxx',
+    'mchnt_cd' => 'xxxxxxxxxx',
     "private_key" => 'MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAJgAzD8fEvBHQTyxUEeK963mjziM
 WG7nxpi+pDMdtWiakc6xVhhbaipLaHo4wVI92A2wr3ptGQ1/YsASEHm3m2wGOpT2vrb2Ln/S7lz1
 ShjTKaT8U6rKgCdpQNHUuLhBQlpJer2mcYEzG/nGzcyalOCgXC/6CySiJCWJmPyR45bJAgMBAAEC
@@ -74,11 +72,8 @@ $node = '1652S202209057647572'.rand(100, 999);
 ////    'reserved_business_params' => json_encode([
 ////        'data' => '12'
 ////    ], JSON_UNESCAPED_UNICODE)
-////    'ins_cd' => '08M0027904',
-////    'mchnt_cd' => '0005840F3983305',
 ////    'random_str' => 'a76c4a662e064788b9ee400455816db2',
 ////    'version' => '1',
-////    'term_id' => '88888888',
 //    'addn_inf' => '',
 //    'txn_begin_ts' => '20220905175956',
 //    'curr_type' => 'CNY',
