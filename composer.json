@@ -10,17 +10,12 @@
     "require": {
         "php": ">=7.2.5",
         "pimple/pimple": "~3.0",
-        "guzzlehttp/guzzle": "~6.1",
-        "ext-xmlwriter": "*",
-        "ext-openssl": "*",
-        "ext-json": "*",
-        "ext-simplexml": "*",
-        "ext-iconv": "*",
-        "ext-curl": "*"
+        "guzzlehttp/guzzle": "~6.1"
     },
     "autoload": {
         "psr-4": {
             "Miposent\\FuiOuPay\\": "src/"
         }
-    }
+    },
+    "license": "MIT"
 }
