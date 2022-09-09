@@ -12,7 +12,7 @@
 ## 引入
 
 ```shell
-$ composer require miposent/fuiou-pay 1.0
+$ composer require miposent/fuiou-pay
 ```
 
 ## 使用
