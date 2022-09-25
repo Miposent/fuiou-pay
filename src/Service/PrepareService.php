@@ -3,14 +3,21 @@
 namespace Miposent\FuiOuPay\Service;
 
 use Miposent\FuiOuPay\Api;
-use Miposent\FuiOuPay\Core\Http;
 
-class Prepare extends Api
+/**
+ * Class PrepareService
+ * @package Miposent\FuiOuPay\Service
+ */
+class PrepareService extends Api
 {
+
+    public $dev_api_host = 'https://fundwx.fuiou.com';
+
+    public $pro_api_host = 'http://spay-mc.fuioupay.com';
 
     /**
      * @param  array  $param
-     * @return false|Prepare|\SimpleXMLElement|string|null
+     * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function micropay(array $param)
@@ -21,7 +28,7 @@ class Prepare extends Api
 
     /**
      * @param  array  $param
-     * @return false|Prepare|\SimpleXMLElement|string|null
+     * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function preCreate(array $param)
@@ -32,7 +39,7 @@ class Prepare extends Api
 
     /**
      * @param  array  $param
-     * @return false|Prepare|\SimpleXMLElement|string|null
+     * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function wxPreCreate(array $param)
@@ -44,7 +51,7 @@ class Prepare extends Api
     /**
      *
      * @param  array  $param
-     * @return false|Prepare|\SimpleXMLElement|string|null
+     * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function commonQuery(array $param)
@@ -54,7 +61,7 @@ class Prepare extends Api
 
     /**
      * @param  array  $param
-     * @return false|Prepare|\SimpleXMLElement|string|null
+     * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function commonRefund(array $param)
@@ -64,7 +71,7 @@ class Prepare extends Api
 
     /**
      * @param  array  $param
-     * @return false|Prepare|\SimpleXMLElement|string|null
+     * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function closeOrder(array $param)
@@ -74,7 +81,7 @@ class Prepare extends Api
 
     /**
      * @param  array  $param
-     * @return false|Prepare|\SimpleXMLElement|string|null
+     * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function cancelOrder(array $param)
@@ -84,7 +91,7 @@ class Prepare extends Api
 
     /**
      * @param  array  $param
-     * @return false|Prepare|\SimpleXMLElement|string|null
+     * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function refundQuery(array $param)
@@ -94,7 +101,7 @@ class Prepare extends Api
 
     /**
      * @param  array  $param
-     * @return false|Prepare|\SimpleXMLElement|string|null
+     * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function hisTradeQuery(array $param)
@@ -104,7 +111,7 @@ class Prepare extends Api
 
     /**
      * @param  array  $param
-     * @return false|Prepare|\SimpleXMLElement|string|null
+     * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function auth2Openid(array $param)
@@ -115,7 +122,7 @@ class Prepare extends Api
 
     /**
      * @param  array  $param
-     * @return false|Prepare|\SimpleXMLElement|string|null
+     * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getOpenid(array $param)
@@ -125,7 +132,7 @@ class Prepare extends Api
 
     /**
      * @param  array  $param
-     * @return false|Prepare|\SimpleXMLElement|string|null
+     * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function withhold(array $param)
@@ -136,11 +143,66 @@ class Prepare extends Api
 
     /**
      * @param  array  $param
-     * @return false|Prepare|\SimpleXMLElement|string|null
+     * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function withholdQuery(array $param)
     {
         return $this->postRequest('/withholdQuery', $param);
+    }
+
+    /**
+     * @param  array  $param
+     * @return false|PrepareService|\SimpleXMLElement|string|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function preAuthFinish(array $param)
+    {
+        return $this->postRequest('/preAuthFinish', $param);
+    }
+
+    /**
+     * @param  array  $param
+     * @return false|PrepareService|\SimpleXMLElement|string|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function preAuthCancel(array $param)
+    {
+        return $this->postRequest('/preAuthCancel', $param);
+    }
+
+
+    /**
+     * @param  array  $param
+     * @return false|PrepareService|\SimpleXMLElement|string|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function preAuthQuery(array $param)
+    {
+        return $this->postRequest('/preAuthQuery', $param);
+    }
+
+    /**
+     * @param  array  $param
+     * @return false|PrepareService|\SimpleXMLElement|string|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function preAuthFinishCancel(array $param)
+    {
+        return $this->postRequest('/preAuthFinishCancel', $param);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getDefaultParam(): array
+    {
+        return [
+            'version' => '1.0',
+            'term_id' => '88888888',
+            'ins_cd' => $this->getConfig()['ins_cd'],
+            'mchnt_cd' => $this->getConfig()['mchnt_cd'],
+            'random_str' => $this->getRandomStr()
+        ];
     }
 }

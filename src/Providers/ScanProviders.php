@@ -1,22 +1,24 @@
 <?php
 
+
 namespace Miposent\FuiOuPay\Providers;
 
-use Miposent\FuiOuPay\Service\PrepareService;
+use Miposent\FuiOuPay\Service\ScanService;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
 /**
- * Class PrepareProviders
+ * Class ScanProviders
  * @package Miposent\FuiOuPay\Providers
  */
-class PrepareProviders implements ServiceProviderInterface
+class ScanProviders implements ServiceProviderInterface
 {
+
     public function register(Container $pimple)
     {
         // TODO: Implement register() method.
-        $pimple['prepare'] = function (Container $pimple) {
-            return new PrepareService($pimple['config']);
+        $pimple['scan'] = function (Container $pimple) {
+            return new ScanService($pimple['config']);
         };
     }
 }

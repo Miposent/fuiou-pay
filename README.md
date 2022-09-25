@@ -2,8 +2,6 @@
 
 📦 基于富友支付提供的文档开发的PHP SDK
 
-
-
 ## 要求
 
 1. PHP >= 7.2.5
@@ -30,10 +28,11 @@ $config = [
 	'mchnt_cd'     => 'xxxxxxx',     //商户号（富有支付提供）
 	'private_key'  => 'xxxxxxxxxx',  //私钥
 	'public_key'   => 'xxxxxxxxxx',  //公钥
+	'before_func'   =>function(array $request){}, //请求前回调用处理方法
+	'after_func'   =>function(array $request,array $response){} //请求后回调用处理方法
 ];
 
 $app = new Application($config );
-
 ```
 
 普通线下扫码API:
@@ -84,6 +83,58 @@ $app->prepare->withholdQuery($param);
 
 ```
 
-## 注意
+扫码支付增值API:
+
+```php
+//查询可结算资金信息
+$app->scan->queryWithdrawAmt($param);
+
+//查询手续费信息
+$app->scan->queryFeeAmt($param);
+
+//发起结算
+$app->scan->withdraw($param);
+
+//资金划拨查询
+$app->scan->queryChnlPayAmt($param);
+
+//钱包结算(原钱包提现)
+$app->scan->walletWithdraw($param);
+
+//钱包结算即时到账查询(原钱包提现D0查询）
+$app->scan->walletWithdraw($param);
+
+//退款账户余额查询接口
+$app->scan->walletQueryWithdrawT0($param);
+
+//退款账户余额查询接口
+$app->scan->queryBalance($param);
+
+//结算交易查询接口
+$app->scan->querySettlement($param);
+
+//微信刷脸支付，获取调用凭证
+$app->scan->wxPayFaceGetAuthInfo($param);
+
+//微信数据上报SDK签名获取接口
+$app->scan->wxPayFaceGetDeviceSign($param);
+
+```
+
+其他
+
+```php
+//解析xml
+\Miposent\FuiOuPay\Core\Xml::decode($re);
+```
+
+注意
+
+```php
+1.有时result_code报102错误时，有可能是要求参数问题，尽可能把参数全填（除reserved外），值默认空字符;
+2.本SDK不做日志处理，若需记录日志，请在初始化配置before_func和after_func中进行记录;
+```
+
+## 申明
 
 本SDK是开源免费，因要求需要有与<a href="https://www.fuioupay.com/">富友支付</a>进行合作才可以使用此SDK

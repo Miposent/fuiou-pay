@@ -9,7 +9,7 @@ class Http
     /**
      * @var array $config
      */
-    private array $config;
+    private  $config;
 
     /**
      * @var  $client

@@ -3,11 +3,14 @@
 namespace Miposent\FuiOuPay;
 
 use Miposent\FuiOuPay\Providers\PrepareProviders;
-use Miposent\FuiOuPay\Service\Prepare;
+use Miposent\FuiOuPay\Providers\ScanProviders;
+use Miposent\FuiOuPay\Service\PrepareService;
+use Miposent\FuiOuPay\Service\ScanService;
 use Pimple\Container;
 
 /**
- * @property Prepare $prepare
+ * @property PrepareService $prepare
+ * @property ScanService $scan
  * Class Application
  * @package Miposent\FuiOuPay
  */
@@ -16,8 +19,9 @@ class Application extends Container
     /**
      * @var array
      */
-    protected array $providers = [
+    protected $providers = [
         PrepareProviders::class,
+        ScanProviders::class,
     ];
 
     public function __construct(array $config)
@@ -34,7 +38,7 @@ class Application extends Container
      *
      * @return mixed
      */
-    public function __get($id)
+    public function __get(string $id)
     {
         return $this->offsetGet($id);
     }
@@ -45,7 +49,7 @@ class Application extends Container
      * @param string $id
      * @param mixed $value
      */
-    public function __set($id, $value)
+    public function __set(string $id, $value)
     {
         $this->offsetSet($id, $value);
     }
