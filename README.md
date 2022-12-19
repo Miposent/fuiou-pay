@@ -24,7 +24,7 @@ use Miposent\FuiOuPay\Application;
 
 //初始化
 $config = [
-    //域名【必填，富友提供（如：https://fundwx.fuiou.com）】
+	//域名【必填，富友提供（如：https://fundwx.fuiou.com）】
 	'api_host'      => 'xxxxxxxxxx',  
 	//密钥【扫码商户入网接口必填，富友提供】
 	'key'           => 'xxxxxxxxxx',  
