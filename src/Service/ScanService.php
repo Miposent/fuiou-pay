@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Miposent\FuiOuPay\Service;
 
 use Miposent\FuiOuPay\Api;
@@ -11,10 +10,6 @@ use Miposent\FuiOuPay\Api;
  */
 class ScanService extends Api
 {
-    public $dev_api_host = 'https://scan-rim-test.fuioupay.com';
-
-    public $pro_api_host = 'https://scan-rim-mc.fuioupay.com';
-
 
     /**
      * @param array $param

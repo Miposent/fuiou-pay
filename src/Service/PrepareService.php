@@ -11,12 +11,8 @@ use Miposent\FuiOuPay\Api;
 class PrepareService extends Api
 {
 
-    public $dev_api_host = 'https://fundwx.fuiou.com';
-
-    public $pro_api_host = 'http://spay-mc.fuioupay.com';
-
     /**
-     * @param  array  $param
+     * @param array $param
      * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
@@ -27,7 +23,7 @@ class PrepareService extends Api
     }
 
     /**
-     * @param  array  $param
+     * @param array $param
      * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
@@ -38,7 +34,7 @@ class PrepareService extends Api
     }
 
     /**
-     * @param  array  $param
+     * @param array $param
      * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
@@ -50,7 +46,7 @@ class PrepareService extends Api
 
     /**
      *
-     * @param  array  $param
+     * @param array $param
      * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
@@ -60,7 +56,7 @@ class PrepareService extends Api
     }
 
     /**
-     * @param  array  $param
+     * @param array $param
      * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
@@ -70,7 +66,7 @@ class PrepareService extends Api
     }
 
     /**
-     * @param  array  $param
+     * @param array $param
      * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
@@ -80,7 +76,7 @@ class PrepareService extends Api
     }
 
     /**
-     * @param  array  $param
+     * @param array $param
      * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
@@ -90,7 +86,7 @@ class PrepareService extends Api
     }
 
     /**
-     * @param  array  $param
+     * @param array $param
      * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
@@ -100,7 +96,7 @@ class PrepareService extends Api
     }
 
     /**
-     * @param  array  $param
+     * @param array $param
      * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
@@ -110,28 +106,30 @@ class PrepareService extends Api
     }
 
     /**
-     * @param  array  $param
+     * @param array $param
      * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function auth2Openid(array $param)
     {
         $param = array_merge(['term_ip' => $this->getClientIp()], $param);
-        return $this->postRequest('/auth2Openid', $param, ['term_id']);
+        $this->setFilterParam(['term_id']);
+        return $this->postRequest('/auth2Openid', $param);
     }
 
     /**
-     * @param  array  $param
+     * @param array $param
      * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getOpenid(array $param)
     {
-        return $this->getRequestUrl('/oauth2/getOpenid', $param, ['version', 'term_id', 'random_str']);
+        $this->setFilterParam(['version', 'term_id', 'random_str']);
+        return $this->getRequestUrl('/oauth2/getOpenid', $param );
     }
 
     /**
-     * @param  array  $param
+     * @param array $param
      * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
@@ -142,7 +140,7 @@ class PrepareService extends Api
     }
 
     /**
-     * @param  array  $param
+     * @param array $param
      * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
@@ -152,7 +150,7 @@ class PrepareService extends Api
     }
 
     /**
-     * @param  array  $param
+     * @param array $param
      * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
@@ -162,7 +160,7 @@ class PrepareService extends Api
     }
 
     /**
-     * @param  array  $param
+     * @param array $param
      * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
@@ -173,7 +171,7 @@ class PrepareService extends Api
 
 
     /**
-     * @param  array  $param
+     * @param array $param
      * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
@@ -183,7 +181,7 @@ class PrepareService extends Api
     }
 
     /**
-     * @param  array  $param
+     * @param array $param
      * @return false|PrepareService|\SimpleXMLElement|string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */

@@ -10,7 +10,7 @@
     "require": {
         "php": ">=7.2.5",
         "pimple/pimple": "~3.0",
-        "guzzlehttp/guzzle": "~6.1",
+        "guzzlehttp/guzzle": "7.4.0",
         "ext-simplexml": "*",
         "ext-json": "*",
         "ext-openssl": "*"

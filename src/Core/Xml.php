@@ -28,9 +28,9 @@ class Xml
      * @param array $data
      * @param bool $isArray
      * @param \XMLWriter|null $XMLWriter
-     * @return string
+     * @return string|void
      */
-    private static function arrayToXml(array $data, bool $isArray = FALSE, \XMLWriter $XMLWriter = null): string
+    private static function arrayToXml(array $data, bool $isArray = FALSE, \XMLWriter $XMLWriter = null)
     {
         $xml = !is_null($XMLWriter) ? $XMLWriter : new \XMLWriter();
         !$isArray && $xml->openMemory();

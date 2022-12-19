@@ -2,8 +2,10 @@
 
 namespace Miposent\FuiOuPay;
 
+use Miposent\FuiOuPay\Providers\MerchantProviders;
 use Miposent\FuiOuPay\Providers\PrepareProviders;
 use Miposent\FuiOuPay\Providers\ScanProviders;
+use Miposent\FuiOuPay\Service\MerchantService;
 use Miposent\FuiOuPay\Service\PrepareService;
 use Miposent\FuiOuPay\Service\ScanService;
 use Pimple\Container;
@@ -11,6 +13,7 @@ use Pimple\Container;
 /**
  * @property PrepareService $prepare
  * @property ScanService $scan
+ * @property MerchantService $merchant
  * Class Application
  * @package Miposent\FuiOuPay
  */
@@ -22,6 +25,7 @@ class Application extends Container
     protected $providers = [
         PrepareProviders::class,
         ScanProviders::class,
+        MerchantProviders::class
     ];
 
     public function __construct(array $config)

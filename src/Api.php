@@ -7,17 +7,27 @@ use Miposent\FuiOuPay\Core\Xml;
 
 class Api
 {
-    public $dev_api_host = '';
-
-    public $pro_api_host = '';
+    public $api_host = '';
 
     protected $http;
 
     protected $config = [];
 
-    private $response;
+    protected $filter_param = [];
+
+    protected $filter_sign = [];
+
+    protected $response;
 
     const SUCCESS = '000000';
+
+    const SIGN_RAS = 0;
+
+    const SIGN_MD5 = 1;
+
+    const FORMAT_XML = 'xml';
+
+    const FORMAT_JSON = 'json';
 
     /**
      * Api constructor.
@@ -31,17 +41,24 @@ class Api
     /**
      * @param string $uri
      * @param array $param
-     * @param array $filter
+     * @param int $method
+     * @param string $format
      * @return $this
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function postRequest(string $uri, array $param, array $filter = []): Api
+    public function postRequest(string $uri, array $param, int $method = self::SIGN_RAS, string $format = self::FORMAT_XML): Api
     {
         $this->getConfig()['before_func']($param);
-        $response = $this->getHttp()->request($uri, 'POST',
-            [
-                'form_params' => ['req' => urlencode(Xml::encode($this->getRequestParam($param, $filter)))]
-            ]);
+        $option = [];
+        switch ($format) {
+            case self::FORMAT_XML:
+                $option['form_params'] = ['req' => $this->getRequestReq($param, $method, $format)];
+                break;
+            case self::FORMAT_JSON:
+                $option['json'] = ['req' => $this->getRequestReq($param, $method, $format)];
+                break;
+        }
+        $response = $this->getHttp()->request($uri, 'POST', $option);
         $this->setResponse($response->getBody()->getContents());
         $this->getConfig()['after_func']($param, $this->getResponse());
         return $this;
@@ -51,12 +68,12 @@ class Api
     /**
      * @param string $uri
      * @param array $param
-     * @param array $filter
+     * @param int $method
      * @return string
      */
-    public function getRequestUrl(string $uri, array $param, array $filter = []): string
+    public function getRequestUrl(string $uri, array $param, int $method = self::SIGN_RAS): string
     {
-        $param = $this->getRequestParam($param, $filter);
+        $param = $this->getRequestParam($param, $method);
         $this->getConfig()['before_func']($param);
         $paramArray = [];
         foreach ($param as $key => $value) {
@@ -67,13 +84,40 @@ class Api
 
     /**
      * @param array $param
-     * @param array $filter
+     * @param int $method
+     * @param string $format
+     * @return string
+     */
+    private function getRequestReq(array $param, int $method, string $format): string
+    {
+        $req = $this->getRequestParam($param, $method);
+        switch ($format) {
+            case self::FORMAT_XML:
+                $req = Xml::encode($req);
+                break;
+            case self::FORMAT_JSON:
+                $req = json_encode($req, JSON_UNESCAPED_UNICODE);
+                break;
+        }
+        return urlencode($req);
+    }
+
+    /**
+     * @param array $param
+     * @param int $method
      * @return array
      */
-    private function getRequestParam(array $param, array $filter): array
+    private function getRequestParam(array $param, int $method): array
     {
-        $param = $this->getFilterParam($this->getIconParam(array_merge($this->getDefaultParam(), $param)), $filter);
-        $param['sign'] = $this->getSign($param);
+        $param = $this->filterParam($this->getIconParam(array_merge($this->getDefaultParam(), $param)));
+        switch ($method) {
+            case self::SIGN_RAS:
+                $param['sign'] = $this->getRasSign($param);
+                break;
+            case self::SIGN_MD5:
+                $param['sign'] = $this->getMd5Sign($param, $this->getConfig()['key']);
+                break;
+        }
         return $param;
     }
 
@@ -82,13 +126,13 @@ class Api
      */
     public function checkVerify()
     {
-        if (empty($this->response->sign)) {
+        $param = $this->getResponse();
+        if (empty($param['sign'])) {
             return false;
         }
-        $param = json_decode(json_encode($this->response), true);
         unset($param['sign']);
-        $paramStr = $this->getParamStr($this->getIconParam($this->getFilterReserved($param)));
-        return openssl_verify($paramStr, base64_decode($this->response->sign), $this->getPublicKey(), OPENSSL_ALGO_MD5);
+        $paramStr = $this->getParamStr($this->getIconParam($this->filterReserved($param)));
+        return openssl_verify($paramStr, base64_decode($this->response['sign']), $this->getPublicKey(), OPENSSL_ALGO_MD5);
     }
 
     /**
@@ -104,9 +148,9 @@ class Api
     }
 
     /**
-     * @return array
+     * @return mixed
      */
-    public function getResponse(): array
+    public function getResponse()
     {
         return $this->response;
     }
@@ -139,6 +183,9 @@ class Api
     protected function getIconParam($param): array
     {
         return array_map(function ($value) {
+            if (is_array($value)) {
+                return $this->getIconParam($value);
+            }
             return !empty($value) ? iconv('utf-8', 'gbk', $value) : $value;
         }, $param);
     }
@@ -147,21 +194,32 @@ class Api
      * @param array $param
      * @return string
      */
-    protected function getSign(array $param): string
+    protected function getRasSign(array $param): string
     {
-        openssl_sign($this->getParamStr($this->getFilterReserved($param)), $sign, $this->getPrivateKey(),
+        openssl_sign($this->getParamStr($this->filterSign($this->filterReserved($param))), $sign, $this->getPrivateKey(),
             OPENSSL_ALGO_MD5);
         return base64_encode($sign);
     }
 
     /**
      * @param array $param
-     * @param array $filter
+     * @param string $key
+     * @return string
+     */
+    protected function getMd5Sign(array $param, string $key): string
+    {
+        $param = $this->filterSign($this->filterReserved($param));
+        $str = $this->getParamStr($param, true) . '&key=' . $key;
+        return md5($str);
+    }
+
+    /**
+     * @param array $param
      * @return array
      */
-    protected function getFilterParam(array $param, array $filter): array
+    protected function filterParam(array $param): array
     {
-        foreach ($filter as $key) {
+        foreach ($this->getFilterParam() as $key) {
             unset($param[$key]);
         }
         return $param;
@@ -171,7 +229,19 @@ class Api
      * @param array $param
      * @return array
      */
-    protected function getFilterReserved(array $param): array
+    protected function filterSign(array $param): array
+    {
+        foreach ($this->getFilterSign() as $key) {
+            unset($param[$key]);
+        }
+        return $param;
+    }
+
+    /**
+     * @param array $param
+     * @return array
+     */
+    protected function filterReserved(array $param): array
     {
         $reserved = [];
         foreach ($param as $key => $value) {
@@ -184,14 +254,30 @@ class Api
 
     /**
      * @param array $param
+     * @param bool $filter
      * @return string
      */
-    protected function getParamStr(array $param): string
+    protected function getParamStr(array $param, bool $filter = false): string
     {
         $combineStr = '';
         ksort($param);
         foreach ($param as $key => $value) {
-            $combineStr .= $key . '=' . (!empty($value) ? $value : '') . '&';
+            if ($filter && is_string($value) && $value == '') {
+                continue;
+            }
+            if (is_array($value)) {
+                if (empty($value)) {
+                    $value = '';
+                } else {
+                    $newValue = [];
+                    foreach ($value as $item) {
+                        ksort($item);
+                        $newValue[] = $item;
+                    }
+                    $value = json_encode($newValue);
+                }
+            }
+            $combineStr .= $key . '=' . ($value != '' ? $value : '') . '&';
         }
         return rtrim($combineStr, "&");
     }
@@ -254,12 +340,55 @@ class Api
     }
 
     /**
+     * @param string $api
+     * @return void
+     */
+    public function setBaseUri(string $api): void
+    {
+        $this->api_host = $api;
+    }
+
+    /**
      * @return string
      */
     public function getBaseUri(): string
     {
-        return $this->getConfig()['mode'] === 'dev' ? $this->dev_api_host : $this->pro_api_host;
+        return $this->api_host;
     }
+
+
+    /**
+     * @return array
+     */
+    public function getFilterParam(): array
+    {
+        return $this->filter_param;
+    }
+
+    /**
+     * @param array $filter
+     */
+    public function setFilterParam(array $filter): void
+    {
+        $this->filter_param = $filter;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFilterSign(): array
+    {
+        return $this->filter_sign;
+    }
+
+    /**
+     * @param array $filter_sign
+     */
+    public function setFilterSign(array $filter_sign): void
+    {
+        $this->filter_sign = $filter_sign;
+    }
+
 
     /**
      * @param $response
@@ -270,7 +399,10 @@ class Api
             $this->response = [];
             return;
         }
-        $this->response = json_decode(json_encode(simplexml_load_string(urldecode($response)), true), true);
+        if (xml_parse(xml_parser_create(), urldecode($response), true)) {
+            $response = json_decode(json_encode(simplexml_load_string(urldecode($response)), true), true);
+        }
+        $this->response = $response;
     }
 
     /**
@@ -281,6 +413,7 @@ class Api
     protected function setConfig(array $config): void
     {
         $this->config = $this->getDefaultConfig();
+        $this->setBaseUri($config['api_host']);
         foreach ($this->config as $key => $value) {
             if (isset($config[$key])) {
                 $this->config[$key] = is_array($value) ? array_merge($value, $config[$key]) : $config[$key];
@@ -294,11 +427,12 @@ class Api
     protected function getDefaultConfig(): array
     {
         return [
-            'mode' => 'dev',
+            'api_host' => '',
             'ins_cd' => '',
             'mchnt_cd' => '',
             'private_key' => '',
             'public_key' => '',
+            'key' => '',
             'http' => [
                 'verify' => false
             ],
