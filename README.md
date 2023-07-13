@@ -4,7 +4,7 @@
 
 ## 要求
 
-1. PHP >= 7.2.5
+1. PHP >= 7.2
 2. **[Composer](https://getcomposer.org/)**
 
 ## 引入
